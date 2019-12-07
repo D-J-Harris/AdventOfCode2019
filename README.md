@@ -7,4 +7,4 @@ Solutions are my own, learning points from observing code on the challenge subre
 
 * Day 4 - Scanning solution worked well, also a fan of str -> list techniques found online. This would make ordering or 'contains 2 of this digit' conditions much more simple.
 
-* Day 7 - Use of multiple independent 'IntCode' systems meant I was forced to go down the class route, and refactoring took some time. However this has been useful practice and comparing against online methods has bee good for learning, especially thinking about schedulers/queues for future problems.
+* Day 7 - Use of multiple independent 'IntCode' systems meant I was forced to go down the class route, and refactoring took some time. However this has been useful practice and comparing against online methods has been good for learning, especially thinking about schedulers/queues for future problems.
