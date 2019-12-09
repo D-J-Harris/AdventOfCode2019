@@ -1,14 +1,21 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from itertools import repeat
+
 
 class Computer:
     
-    def __init__(self, data, inputs):
+    def __init__(self, data, inputs, test_mode=False):
     
         self.data = data
         self.inputs = [inputs]
         self.pointer = 0
+        self.relative_base = 0
+        self.memory_locs = len(self.data)
+        
+        # assume not in TEST mode
+        self.test_mode = test_mode
         
 
         # dict for finding how many parameters in instruction
@@ -21,8 +28,18 @@ class Computer:
             5: 2,
             6: 2,
             7: 3,
-            8: 3
+            8: 3,
+            9: 1
         }
+        
+        
+    # increase by pointer difference, or by specified amount
+    def increase_memory(self, last_idx=False):
+        
+        if not last_idx:
+            self.data.extend(repeat(0, self.pointer - (self.memory_locs - 1)))
+        else:
+            self.data.extend(repeat(0, last_idx - (self.memory_locs - 1)))
 
 
     # returns opcode of instruction, and modes of the parameters
@@ -50,41 +67,69 @@ class Computer:
 
 
 
+    def get_param(self, instruction, modes, idx, rel=0, save=False):
+    # save parameter refers to outputs/inputs saving, which ignore position mode
 
-    def get_param(self, instruction, modes, idx):
-    
+        # make sure we can access the output pointer location with current memory
+        if self.memory_locs - 1 < instruction[idx]:
+            self.increase_memory(instruction[idx])
+      
         if modes[idx] == 0:
-            return self.data[instruction[idx]]
-        else:
+            if save:
+                return instruction[idx]
+            else:
+                return self.data[instruction[idx]]
+
+        elif modes[idx] == 1:
             return instruction[idx]
 
+        elif modes[idx] == 2:
+            if save:
+                return instruction[idx] + self.relative_base
+            else:
+                return self.data[instruction[idx]] + self.relative_base
+
+        else:
+            print('modes error')
+      
 
 
     # computer, returns output as first arg, and either data or True for second arg
     # data if the computer is outputting, True if the computer is halting
-    def run_computer(self, inputs):
+    def run_computer(self, inputs=None):
         
-        self.inputs += inputs
         computer_output = 0
+        if inputs is not None:
+            self.inputs += inputs
 
         # loop until halt with opcode 99
         while True:
+            
+            # make sure we can access the pointer location with current memory
+            if self.memory_locs - 1 < self.pointer:
+                self.increase_memory()
 
             opcode_instruction = self.data[self.pointer]
 
             opcode, modes = self.process_instruction(opcode_instruction)
 
             instruction = self.data[self.pointer + 1 : self.pointer + len(modes) + 1]
+           
 
             if opcode == 99:
-                print(f"Opcode 99, halt for inputs {inputs}")
+                print(f"Opcode 99, halt")
                 return computer_output, True
             elif opcode == 1:
 
                 param_1 = self.get_param(instruction, modes, 0)
                 param_2 = self.get_param(instruction, modes, 1)
-                output_idx = instruction[2]
+                output_idx = self.get_param(instruction, modes, 2, save=True)
                 addition = param_1 + param_2
+                
+                # make sure we can access the output pointer location with current memory
+                if self.memory_locs - 1 < output_idx:
+                    self.increase_memory(output_idx)
+                    
                 self.data[output_idx] = addition
                 self.pointer += len(modes) + 1 
 
@@ -92,25 +137,32 @@ class Computer:
 
                 param_1 = self.get_param(instruction, modes, 0)
                 param_2 = self.get_param(instruction, modes, 1)
-                output_idx = instruction[2]
-
+                output_idx = self.get_param(instruction, modes, 2, save=True)
                 multiply = param_1 * param_2
+                
+                # make sure we can access the output pointer location with current memory
+                if self.memory_locs - 1 < output_idx:
+                    self.increase_memory(output_idx)
+                    
                 self.data[output_idx] = multiply
                 self.pointer += len(modes) + 1 
 
             elif opcode == 3:
 
-                input_idx = instruction[0]
+                input_idx = self.get_param(instruction, modes, 0, save=True)
                 self.data[input_idx] = self.inputs.pop(0)
                 self.pointer += len(modes) + 1 
 
             elif opcode == 4:
 
-                output = self.get_param(instruction, modes, 0)
-                print(f"Opcode 4 output: {output}, for inputs {self.inputs}")
+                output_idx = self.get_param(instruction, modes, 0, save=True)
+                output = self.data[output_idx]
+                print(f"Opcode 4 output: {output}")
                 self.pointer += len(modes) + 1 
                 computer_output = output
-                return computer_output, False
+                
+                if not self.test_mode:
+                    return computer_output, False
 
             elif opcode == 5:
 
@@ -134,7 +186,12 @@ class Computer:
 
                 param_1 = self.get_param(instruction, modes, 0)
                 param_2 = self.get_param(instruction, modes, 1)
-                param_3 = instruction[2]
+                param_3 = self.get_param(instruction, modes, 2, save=True)
+                
+                # make sure we can access the output pointer location with current memory
+                if self.memory_locs - 1 < param_3:
+                    self.increase_memory(param_3)
+                
                 if param_1 < param_2:
                     self.data[param_3] = 1
                 else:
@@ -145,11 +202,22 @@ class Computer:
 
                 param_1 = self.get_param(instruction, modes, 0)
                 param_2 = self.get_param(instruction, modes, 1)
-                param_3 = instruction[2]
+                param_3 = self.get_param(instruction, modes, 2, save=True)
+                
+                # make sure we can access the output pointer location with current memory
+                if self.memory_locs - 1 < param_3:
+                    self.increase_memory(param_3)
+                
                 if param_1 == param_2:
                     self.data[param_3] = 1
                 else:
                     self.data[param_3] = 0
+                self.pointer += len(modes) + 1
+                
+            elif opcode == 9:
+                
+                param = self.get_param(instruction, modes, 0)
+                self.relative_base += param
                 self.pointer += len(modes) + 1
 
             else:
