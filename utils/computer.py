@@ -64,6 +64,17 @@ class Computer:
         
         elif modes[pos-1] == 2:
             return self.data[self.data[self.pointer + pos] + self.rel_base]
+        
+    # get the index of inputs/outputs according to mode
+    def index(self, pos, modes):
+        if modes[pos-1] == 0:
+            return self.data[self.pointer + pos]
+        
+        elif modes[pos-1] == 1:
+            return self.pointer + pos
+        
+        elif modes[pos-1] == 2:
+            return self.data[self.pointer + pos] + self.rel_base
 
 
     # computer, returns output as first arg, and either data or True for second arg
@@ -95,24 +106,25 @@ class Computer:
             
             elif opcode == 1:
 
-                output_idx = self.data[self.pointer + 3]
+                output_idx = self.index(3, modes)
                 self.data[output_idx] = self.param(1, modes) + self.param(2, modes)
                 self.pointer += 4
 
             elif opcode == 2:
 
-                output_idx = self.data[self.pointer + 3]
+                output_idx = self.index(3, modes)
                 self.data[output_idx] = self.param(1, modes) * self.param(2, modes)
                 self.pointer += 4
 
             elif opcode == 3:
 
-                input_idx = self.data[self.pointer + 1]
+                input_idx = self.index(1, modes)
                 self.data[input_idx] = self.inputs.pop(0)
                 self.pointer += 2
 
             elif opcode == 4:
                 
+                output_idx = self.index(1, modes)
                 computer_output = self.data[output_idx]
                 self.pointer += 2
                 
@@ -136,7 +148,7 @@ class Computer:
                     
             elif opcode == 7:
                 
-                store_idx = self.param(3, modes)
+                store_idx = self.index(3, modes)
                 if self.param(1, modes) < self.param(2, modes):
                     self.data[store_idx] = 1
                 else:
@@ -145,7 +157,7 @@ class Computer:
                     
             elif opcode == 8:
 
-                store_idx = self.param(3, modes)
+                store_idx = self.index(3, modes)
                 if self.param(1, modes) == self.param(2, modes):
                     self.data[store_idx] = 1
                 else:
