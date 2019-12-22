@@ -16,6 +16,7 @@ class Computer:
         self.rel_base = 0
         self.verbose = verbose
         self.halted = False
+        self.output = 0
         
         # dict for finding how many parameters in instruction
         self.instruction_length_dict = {
@@ -82,7 +83,6 @@ class Computer:
     # data if the computer is outputting, True if the computer is halting
     def run_computer(self, inputs=None):
         
-        computer_output = 0
         if inputs is not None:
             self.inputs += inputs
             
@@ -102,6 +102,7 @@ class Computer:
                 self.halted = True
                 if self.verbose:
                     print("Opcode 99, halt")
+                return self.output
                
             elif opcode == 1:
 
@@ -124,12 +125,12 @@ class Computer:
             elif opcode == 4:
                 
                 output_idx = self.index(1, modes)
-                computer_output = self.data[output_idx]
+                self.output = self.data[output_idx]
                 self.pointer += 2
                 
                 if self.verbose:
-                    print(f"Opcode 4 output: {computer_output}")
-                return computer_output
+                    print(f"Opcode 4 output: {self.output}")
+                return self.output
                 
             elif opcode == 5:
 
