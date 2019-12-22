@@ -8,3 +8,11 @@ Solutions are my own, learning points from observing code on the challenge subre
 * Day 4 - Scanning solution worked well, also a fan of str -> list techniques found online. This would make ordering or 'contains 2 of this digit' conditions much more simple.
 
 * Day 7 - Use of multiple independent 'IntCode' systems meant I was forced to go down the class route, and refactoring took some time. However this has been useful practice and comparing against online methods has been good for learning, especially thinking about schedulers/queues for future problems.
+
+* Day 9 - Resumed the advent calendar from this point after exams. Completing this day took the longest, as I had to again refactor my 'IntCode' system. I am happy with where it is now, and have found this challenge extremely useful in improving my skills in OOP and general code factoring/readability.
+
+* Day 10 - Proud of how I did today, making effective use of defaultdicts and using a polar coordinate approach.
+
+* Day 11 - Smooth day, noting however after checking out reddit that complex numbers sound like a very good idea for turn/direction based code, so I will bear this in mind in future.
+
+* Day 12 - Learned online about more OOP concepts, such as instance/class attributes and @property decorators.
