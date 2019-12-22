@@ -16,3 +16,5 @@ Solutions are my own, learning points from observing code on the challenge subre
 * Day 11 - Smooth day, noting however after checking out reddit that complex numbers sound like a very good idea for turn/direction based code, so I will bear this in mind in future.
 
 * Day 12 - Learned online about more OOP concepts, such as instance/class attributes and @property decorators.
+
+* Day 13 - Altered 'IntCode' system to take input functions, as seen in an alternate online answer, to handle inputs on the fly. The implementation of this meant I learned about passing lambda functions, and the difference between pass by (object) reference/value.
