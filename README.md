@@ -13,4 +13,6 @@ Solutions are my own, learning points from observing code on the challenge subre
 
 * Day 10 - Proud of how I did today, making effective use of defaultdicts and using a polar coordinate approach.
 
+* Day 11 - Smooth day, noting however after checking out reddit that complex numbers sound like a very good idea for turn/direction based code, so I will bear this in mind in future.
+
 * Day 12 - Learned online about more OOP concepts, such as instance/class attributes and @property decorators.
