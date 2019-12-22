@@ -7,10 +7,10 @@ import numpy as np
 
 class Computer:
     
-    def __init__(self, data, inputs, verbose=False):
+    def __init__(self, data, inputs=[], verbose=False):
     
         self.data = data
-        self.inputs = [inputs]
+        self.inputs = inputs
         self.pointer = 0
         self.rel_base = 0
         self.verbose = verbose
@@ -101,9 +101,7 @@ class Computer:
                 self.halted = True
                 if self.verbose:
                     print("Opcode 99, halt")
-                return computer_output
-        
-            
+               
             elif opcode == 1:
 
                 output_idx = self.index(3, modes)
