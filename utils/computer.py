@@ -7,10 +7,11 @@ import numpy as np
 
 class Computer:
     
-    def __init__(self, data, inputs=[], verbose=False):
+    def __init__(self, data, inputs=[], verbose=False, input_func=None):
     
         self.data = data
         self.inputs = inputs
+        self.input_func = input_func
         self.pointer = 0
         self.rel_base = 0
         self.verbose = verbose
@@ -117,7 +118,7 @@ class Computer:
             elif opcode == 3:
 
                 input_idx = self.index(1, modes)
-                self.data[input_idx] = self.inputs.pop(0)
+                self.data[input_idx] = self.inputs.pop(0) if self.inputs else self.input_func()
                 self.pointer += 2
 
             elif opcode == 4:
