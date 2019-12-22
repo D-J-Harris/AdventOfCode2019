@@ -119,8 +119,12 @@ class Computer:
             elif opcode == 3:
 
                 input_idx = self.index(1, modes)
-                self.data[input_idx] = self.inputs.pop(0) if self.inputs else self.input_func()
+                input_val = self.inputs.pop(0) if self.inputs else self.input_func()
+                self.data[input_idx] = input_val
                 self.pointer += 2
+                
+                if self.verbose:
+                    print(f"input: {input_val}")
 
             elif opcode == 4:
                 
